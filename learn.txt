@@ -41,6 +41,7 @@ CREATE TABLE cities (
 
 keyword: tell db that we want do sth. capital.
 identifier: tell db what thing we want act on.
+
 -----------------------
 
 INSERT :
@@ -62,8 +63,12 @@ CALCULATE PROPS AND COLUMNS :
 
 SELECT name, population/area FROM cities;
 
-can do math here. also ^ exponent |/ square root
-@ absolute value   %reminder
+can do math here. 
+also 
+^ exponent 
+|/ square root
+@ absolute value   
+% reminder
 
 -----------------------
 
@@ -99,9 +104,16 @@ WHERE
 ------------------------
 
 comparison in where statements :
-= , > , < , >=
-IN (is the value present in list) , <= , <> (not equal) , != (not equal) 
-BETWEEN , NOT IN (is the value present in list) 
+= , 
+> , 
+< , 
+>=
+IN (is the value present in list) ,  
+<= , 
+<> (not equal) , 
+!= (not equal) 
+BETWEEN , 
+NOT IN (is the value present in list) 
 
 
 SELECT name, area FROM cities WHERE area = 4223;
@@ -121,6 +133,8 @@ UPDATE cities SET population=333333 WHERE name='tokyo';
 
 -----------------------
 
+DELETE :
+
 DELETE FROM cities WHERE name='tokyo';
 
 -----------------------
@@ -128,13 +142,17 @@ DELETE FROM cities WHERE name='tokyo';
 photo sharing app :
 
 what table should we make totally?
-common features like auth , comments
-what type of resource(features) exist create table for it.
-featres that indicated relatoin or owner ship  BETWEEN 2 types.
 
+common features like auth , comments
+
+what type of resource(features) exist create table for it.
+
+features that indicated relatoin or owner ship  BETWEEN 2 types.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 google it like this
 sql schema upvote system
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 one to many / many to one
 one to one / many to many
@@ -162,7 +180,7 @@ CREATE TABLE users (
 	id SERIAL,
 );
 
-SERIAL create us autogenerate id incremental
+SERIAL create us autogenerate id incremental in postgres
  
 ===
 
@@ -211,10 +229,10 @@ CREATE TABLE photos (
 queries with joins and aggregation :
 
 
-join : use to produce value by merging use join most of times.
+join : use to produce value by merging, use join most of times.
 
 aggregation : look at many rows and calculate a single value.
-  use with word like most least and other average ... .
+  use with word like 'most' 'least' and other 'average' ... .
 
 
 === 
@@ -271,7 +289,8 @@ aggregation and grouping :::
 
 grouping : reduce many rows down to fewer rows.
 done by GROUP BY 
-visualizing the result is key to use.
+
+''''visualizing'''' the result is key to use.
 
 aggregates : reduces many values down to one .
 done by using aggregate functions.
@@ -279,15 +298,17 @@ done by using aggregate functions.
 ===
 
 SELECT user_id FROM COMMENTS GROUP BY user_id;
-db make it unique base on value.
-it return imaginary grouped column.
+
+''db'' make it unique base on value.
+
+it return ''imaginary grouped column''.
 
 ===
 
 aggregate functions :
 
 COUNT() : when we use count null value not counted
-          count(*) count rows.
+          count(*) count all rows.
 SUM()
 AVG()
 MIN()
@@ -318,13 +339,71 @@ JOIN
 WHERE    : filtering some of rows
 GROUP BY
 HAVING   : filters the set of groups like where do for rows, 
-           always come with group by.
+           always come with group by. 
 
 
 ===
 
 HAVING :
  
+for filtering groups always with group by;
+with having your normally see aggregate functions.
+
+SELECT
+  photo_id,
+  COUNT(*)
+FROM
+  COMMENTS
+WHERE
+  photo_id < 3
+GROUP BY
+  photo_id
+HAVING
+  COUNT(*) > 2;
+
+
+SELECT
+-- 2 imaginary columns.
+	user_id , COUNT(*)
+FROM
+  COMMENTS
+WHERE
+  photo_id < 50
+GROUP BY
+  user_id
+HAVING
+  COUNT(*) > 20;
+
+===
+--------------------
+
+E-commerce DataSet :
+
+===
+
+Sorting records :
+
+means sort on retrieve info.
+
+SELECT * FROM products ORDER BY price;
+SELECT * FROM products ORDER BY price DESC;
+SELECT * FROM products ORDER BY name;
+
+sort by 2 criteria or more :
+SELECT * FROM products ORDER BY price, weight;
+
+===
+
+Offset : skip some of the records of result set
+SELECT * FROM users OFFSET 40;
+
+limit : make sure only take some specific number of results.
+SELECT * FROM users OFFSET 20 LIMIT 20;
+
+===
+
+Many to Many
+
 
 
 
