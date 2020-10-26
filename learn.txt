@@ -1,0 +1,433 @@
+pg and sql :
+
+with client we connect to db
+client is peice of software api utility program
+
+-----------------------
+
+challenges :
+
+writing efficient queries to get data
+designing strcuture and schema
+when to use advanced features
+manage db is prod env.
+
+-----------------------
+
+
+db design process:
+
+what kind of thing we are storing? define class
+cities --> table (store collection of records with related meaning)
+city --> row
+
+what props does this thing have? define class props
+name country population area --> columns == props
+
+what type of data each props have? define type of props
+string string number number
+
+-----------------------
+
+CRETE DB :
+
+  keyword    identifier
+CREATE TABLE cities (
+	COLUMN1 VARCHAR(50),
+  COLUMN2 VARCHAR(50),
+  COLUMN3 INTEGER,
+  COLUMN4 INTEGER
+);
+
+keyword: tell db that we want do sth. capital.
+identifier: tell db what thing we want act on.
+-----------------------
+
+INSERT :
+
+INSERT INTO cities (name, country, population,area)
+VALUES ('tokyo', 'japan',385000, 8223),
+       ('shanghai', 'china',375000, 8223)
+
+-----------------------
+
+RETRIVE :
+
+SELECT * FROM cities;
+SELECT NAME,COUNTRY FROM cities;
+
+-----------------------
+
+CALCULATE PROPS AND COLUMNS :
+
+SELECT name, population/area FROM cities;
+
+can do math here. also ^ exponent |/ square root
+@ absolute value   %reminder
+
+-----------------------
+
+STRING OPERATORS AND FUNCTIONS :
+
+|| join two strings
+CONCAT() join 2 strings.
+LOWER()
+LENGTH()
+UPPER()
+
+
+SELECT name || country AS conacted FROM cities;
+
+SELECT name ||', ' || country AS conacted FROM cities;
+
+-----------------------
+
+FILTERING ROWS WITH WHERE :
+
+order of exec.
+// third exec it.
+SELECT
+  name,
+  area
+// first exec it
+FROM
+  cities
+// second exec it
+WHERE
+  area > 4000;
+
+------------------------
+
+comparison in where statements :
+= , > , < , >=
+IN (is the value present in list) , <= , <> (not equal) , != (not equal) 
+BETWEEN , NOT IN (is the value present in list) 
+
+
+SELECT name, area FROM cities WHERE area = 4223;
+
+more complicated :
+
+SELECT name, area FROM cities WHERE area BETWEEN 3223 AND 8000;
+SELECT name, area FROM cities WHERE name IN ('delhi', 'istanbul');
+SELECT name, area FROM cities WHERE name IN ('delhi', 'istanbul') AND area > 4000;
+
+-----------------------
+
+UPDATE :
+
+we not fetch data
+UPDATE cities SET population=333333 WHERE name='tokyo';
+
+-----------------------
+
+DELETE FROM cities WHERE name='tokyo';
+
+-----------------------
+
+photo sharing app :
+
+what table should we make totally?
+common features like auth , comments
+what type of resource(features) exist create table for it.
+featres that indicated relatoin or owner ship  BETWEEN 2 types.
+
+google it like this
+sql schema upvote system
+
+
+one to many / many to one
+one to one / many to many
+
+
+we handle these relation by new notations
+
+Primary key , Foreign key.
+
+Primary : unique identifier for row.
+
+Foreign : identifier for a record in another table .
+          its a Primary key of info from another table .
+
+Foreign key sits in table of many 
+Foreign key is a Primary key of table one in one to many relation.
+
+many table get pointer to one table with Foreign key .
+
+many side get Foreign key column.
+
+===
+
+CREATE TABLE users (
+	id SERIAL,
+);
+
+SERIAL create us autogenerate id incremental
+ 
+===
+
+CREATE table with Foreign key
+
+CREATE TABLE photos (
+  id SERIAL PRIMARY KEY,
+  url VARCHAR(200),
+  user_id INTEGER REFERENCES users(id),
+);
+
+===
+
+JOIN :
+WE DO MORE BUT FOR NOW .
+
+SELECT url, username FROM photos JOIN users ON users.id = photos.user_id;
+
+
+===
+
+Data Consistency : actually means the data we saved already make sense.
+
+if want insert photo and user does not exist?
+or if dont assign user to photo? use Null
+
+
+what happen if you try to delete user when a photo still Referncing
+
+ON DELETE RESTRIC       throw error
+ON DELETE NO ACTION     throw error
+ON DELETE CASCADE       delete photo too!
+
+ON DELETE SET NULL      set the Foreign key NULL
+ON DELETE SET DEFAULT   set the Foreign key to predefined value.
+
+
+CREATE TABLE photos (
+  id SERIAL PRIMARY KEY,
+  url VARCHAR(200),
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
+);
+
+===
+
+queries with joins and aggregation :
+
+
+join : use to produce value by merging use join most of times.
+
+aggregation : look at many rows and calculate a single value.
+  use with word like most least and other average ... .
+
+
+=== 
+
+join data from tables.
+
+SELECT
+  contents,
+  username
+FROM
+  COMMENTS
+  JOIN users ON users.id = COMMENTS.user_id;
+
+===
+
+different kind of join :
+
+handle missing data in joins . like with Foreign key null
+we use left join (left outer join) it show us null
+
+also check pdf file in parallel
+
+
+===
+
+join with where :
+
+SELECT contents, url 
+FROM COMMENTS 
+JOIN photos ON photos.id = COMMENTS.photo_id 
+WHERE photos.user_id = COMMENTS.user_id;
+
+===
+
+3 way join :
+
+SELECT
+  contents,
+  url,
+  username
+FROM
+  COMMENTS
+  JOIN photos ON photos.id = COMMENTS.photo_id
+  JOIN users ON users.id = comments.user_id
+  AND users.id = photos.user_id
+WHERE
+  photos.user_id = COMMENTS.user_id;
+
+hint : the most passive table use to select on joins.
+
+===
+
+aggregation and grouping :::
+
+grouping : reduce many rows down to fewer rows.
+done by GROUP BY 
+visualizing the result is key to use.
+
+aggregates : reduces many values down to one .
+done by using aggregate functions.
+
+===
+
+SELECT user_id FROM COMMENTS GROUP BY user_id;
+db make it unique base on value.
+it return imaginary grouped column.
+
+===
+
+aggregate functions :
+
+COUNT() : when we use count null value not counted
+          count(*) count rows.
+SUM()
+AVG()
+MIN()
+MAX()
+
+must use alone not with normal select or with group by
+
+SELECT SUM(id) FROM COMMENTS;
+
+===
+
+group by and aggregate combine :
+
+SELECT user_id, COUNT(id) FROM COMMENTS GROUP BY user_id 
+
+===
+
+you need visualizing for grouping .
+
+SELECT photo_id ,COUNT(*) FROM COMMENTS GROUP BY photo_id;
+
+===
+
+orders of filters :
+
+FROM
+JOIN
+WHERE    : filtering some of rows
+GROUP BY
+HAVING   : filters the set of groups like where do for rows, 
+           always come with group by.
+
+
+===
+
+HAVING :
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
