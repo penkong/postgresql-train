@@ -603,6 +603,47 @@ SELECT DISTINCT department, name FROM products;
 
 ==
 
+GREATEST :
+
+SELECT GREATEST(20,10,300);
+
+SELECT
+  name,
+  weight,
+  GREATEST(30, 2 * weight)
+FROM
+  products;
+
+
+===
+
+Least :
+SELECT LEAST(20,10,300);
+
+SELECT
+  name,
+  price,
+  GREATEST(400, 0.5 * price)
+FROM
+  products;
+
+===
+
+CASE : conditional.
+
+SELECT
+  name,
+  price,
+  CASE
+  	WHEN price > 600 THEN 'high'
+    WHEN price > 300 THEN 'medium'
+    ELSE 'cheap'
+  END
+FROM
+  products;
+
+===
+
 Many to Many
 
 
