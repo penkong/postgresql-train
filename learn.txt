@@ -720,16 +720,97 @@ is defined?
 is a  value unique in its column?
 is a value > < = >= ?
 
+===
+
+NOT NULL constraints;
+when table create or
+after table create : ALTER TABLE x ALTER COLUMN SET NOT NULL
+
+ALTER TABLE products ALTER column price SET NOT null;
+maybe we have already null value.
+update products set price = 9999 where price is null;
+
+===
+
+DEFAULT value :
+
+for ex : price INTEGER DEFAULT 9999
+
+case after create :
+
+ALTER TABLE products 
+ALTER column price 
+SET DEFAULT 999;
+
+===
+
+UNIQUE constraint :
+on create : name VARCHAR(5) unique
+
+or 
+
+on created :
+ALTER TABLE products ADD UNIQUE (name);
+
+===
+
+to remove existing constraints :
+
+alter table public.products drop constraint products_pkey
+
+Mulit Column unique :
+
+on create : UNIQUE(name, department)
+
+on created :
+alter table products add unique (name,department);
+
+
+===
+
+check value Validation 
+
+on create : price INTEGER CHECK (price > 0)
+
+on created : ALTER TABLE x ADD CHECK (price > 0);
+
+
+check Multiple columns :
+case : like time of delivery must be after creation.
+
+check (created_at < est_delivary)
+===
+
+--------------------------------
+
+DataBase strcuture Design Pattern :
+
+Instagram type database 
+
+===
+
+better doc everything, 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+diagraming tools
+we can use a schema designer to see relation 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+dbdiagram.io
+drawsql.app
+sqldbm.com
+quickdatabasediagrams.com
+ondras.zarovi.cz/sql/demo
 
 ===
 
 
+Like System :
 
+polymorphic association 
+like a like can be a 'post like' or a 'comment like'
 
-
-
-
-
+===
 
 
 
