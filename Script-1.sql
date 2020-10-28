@@ -52,6 +52,10 @@
 --values ('shirt', '2000-nov-20 01:00am', '2000-nov-19 01:00am');
 
 
+--select
+--	coalesce(null, 5)
+--select
+--	coalesce(10, 5)
 
 
 

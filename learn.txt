@@ -806,39 +806,64 @@ ondras.zarovi.cz/sql/demo
 
 
 Like System :
-
-polymorphic association 
+solution 1 :
+polymorphic association (Foreign key refer 2 table)
 like a like can be a 'post like' or a 'comment like'
+it make Foreign key refer to 2 table bad practice.
+
+solution 2 : 
+use likes table with post_id and comment_id
+and use COALESCE();
+
+solution 3 :
 
 ===
 
 
+COALESCE:
+
+it is func that look at different args its provided
+and it return first value is not null
+COALESCE(null,5)
+COALESCE(10,5)
+
+COALESCE((4)::Boolean::INTEGER, 0)
 
 
+we want check in likes table only one of post_id or comment_id exist
+Add check of :
+(
+  COALESCE((post_id)::Boolean::INTEGER, 0) 
+  + COALESCE((comment_id)::Boolean::INTEGER, 0)
+) = 1
+
+===
+
+hint : view is like bring up together a union  
+we generally dont store derived data
+
+===
+
+Mention And Caption :
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+lat REAL
+lng REAL
+REAL store 6 digit precisely
 
 
 ===
 
 
+Followers :
 
+===
+
+-----------------------------
+
+Complex Queries :
+
+===
 
 
 
