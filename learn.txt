@@ -867,18 +867,38 @@ Complex Queries :
 
 
 
+--------------------------------
 
 
+advanced PG :
+
+performance with postgres
+
+we use show when we want to pull one individual configuration option
+out of postgress
+
+show data_directory;
+
+all data save in base folder.
+
+we can find with oid and datname with below command show folders info in base
+select  oid, datname from pg_database;
 
 
+u can check in any file by :
+select * from pg_class;
+each file object show one row
 
+heap file : the file that contains all the data of our table
 
+tuple or item : individual row from table.
 
+block or page : the heap file divided into many different blocks or pages
+                each page or block store some number of rows. (each are 8kb)
 
-
-
-
-
+(binary data there is in each block)
+block 1 or x : info about this block, actual data (itemIdData s s ), free space if exists ,
+               data for tuple 1 and tuple 2 .
 
 
 
