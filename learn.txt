@@ -901,52 +901,260 @@ block 1 or x : info about this block, actual data (itemIdData s s ), free space 
                data for tuple 1 and tuple 2 .
 
 
+--------------------------------------
+
+indexes for performance :
+
+
+heap file => blocks
+on query :
+from hard to memory is res consumer.
+from heapfile to memory and do search by search 
+Full table scan will do by pg.
+but full table scan always not bad solution
+but if you do must check other ways. find more efficient way.
+
+index : is data strcuture that efficiently tells us what      
+        block / index a record is stored at (its out of heapfile)
+
+
+how index works???
+
+which column we want do fast query - specific column
+extract property and store block and index in Index
+sort with meaninngful way (alpha)
+organize those data into a tree data strcuture (left leaf to right leaf)
+and root node show in-equality decision place.
+
+
+create an index
+create index on users (username);
+
+delete an index 
+drop index <name of index>;
+
+
+
+Benchmarking query :
+explain analyze select * from users where username = 'Emil30'
+
+
+Downside of index :
+index store in hdd not memory (it can be large)
+size
+slow down insert / update / delete because must index it.
+maybe pg not use of that.
+
+get table size : select pg_size_pretty(pg_relation_size('users'))
+get index size : 
 
 
 
 
+there is different tpye of index : b tree (top) use 99% of times , 
+also : 
+hash speed up simple equality check , 
+gist geometry full text search, 
+sp-gist clustred data such as dates many rows might have the same year, 
+gin for columns that contain array or json data, 
+brin speciallized for really large data base .
+
+
+
+primary key and Foreign key automatically become index.
+
+
+find all index in db :
+select relname , relkind from pg_class where relkind = 'i';
+
+
+
+behind scene of indexing :
+on disk 
+we create an actual file 
+it have meta page 8kb , leaf block/page 8kb , leaf block/page 8kb ,
+root block/page 8kb , ... , each are leaf of b tree .
+
+use 
+create extension pageinspect;
+can take look at data of index in heap file 
+
+select  * from bt_metap('users_username_idx')
+show index of root page in heap file of indicies
+
+for get info of that specific page 
+select  * from bt_page_items('users_username_idx', 3)
+
+root node or root page give you decision , matching condition
+
+first row in each leaf node is pointer to next one .
+
+
+-----------------------------------------
+
+Query Tunning :
+
+steps query go through in pg :
+query pipline : 
+evaluate correct query
+parser : build query tree - logical steps for p
+
+rewrite : decompose views into underlying table references 
+          make a little modification to execute better.
+
+planner : look at query tree , find out what info you want fetch
+          and make different plan or strategies to get info (use index)
+
+executer : run! 
+
+
+=== 
+planner stage :
+
+Benchmarking tools not for prod .
+
+put in front of each query.
+EXPLAIN : build a query plan and display info.
+EXPLAIN ANALYZE : build a query plan and display info and run it.
+
+
+
+cost : amount of time to execute some of query plan.
+
+by index we load up 2 random pages but in normal query we load sequential
+
+index use for small set of records not sth like created_at > 2011
+
+-----------------------------------
+
+Common Table Expressions : CTE
+
+let us know how query execute
+let us make understand form normal form
+also use for write recursive form of queries that impossible in normal
+
+select username , tags.created_at 
+from users join (
+	select user_id ,created_at from caption_tags 
+	union all
+	select user_id , created_at  from photo_tags pt 
+) as tags on tags.user_id = users.id
+where tags.created_at < '2010-01-07'
 
 
 
 
+with tags as (
+	select user_id ,created_at from caption_tags 
+	union all
+	select user_id , created_at  from photo_tags pt 
+)
+select username , tags.created_at 
+from users join tags on tags.user_id = users.id
+where tags.created_at < '2010-01-07'
 
 
+------------------------------------------------
+
+recursive CTS : 
+mostly used when work with graph or tree strcuture like .
+every cte you write has union keyword inside it
 
 
+with recursive countdown(val) as (
+	select 8 as val -- initial , non recursive query
+	union
+	select val -1 from countdown where val > 1 -- recursive query
+)
+select * 
+from 
+countdown;
+
+behnid scene :
+pg make 2 table , result table and working table
+number of columns are countdown(val,col2,col3,...)
+first we run non recursive statement and put in both table.
+then recursive run and countdown become name of working table.
+if recursive not return any row stop it.
 
 
+real world ex : find Followers of your followers. to give suggestion
 
 
+with recursive suggestions(leader_id, follower_id, depth) as (
+	select
+		leader_id ,
+		follower_id ,
+		1 as depth
+	from followers 
+	where follower_id = 1000
+	union 
+	select followers.leader_id , followers.follower_id, depth + 1
+	from followers 
+	join suggestions on suggestions .leader_id = followers.follower_id 
+	where depth < 3
+)
+select distinct users.id , users.username 
+from suggestions 
+join users on users.id = suggestions.leader_id
+where depth  > 1
+limit 30;
 
 
+any heirarchy use recursive cte .
+
+===
 
 
+--------------------------------------
+hint : copy all the rows from one table to another
+insert into table1(x,y,z,y)
+select x,y,z,y
+from table2
 
+Simplify queries with views :
 
+maybe we have design mistake and need to merge 2 tables
+can back and make design
+or 
+view : fake table that has a references to rows or data from other tables in db
+make cleaner 
+not like  CTE we can refer it to view from anywhere
 
+create view tags as (
+	select id ,created_at , user_id, post_id,'photo_tag' as type from photo_tags
+	union all
+	select id ,created_at , user_id, post_id,'caption_tag' as type from caption_tags
+)
 
+select * from tags
 
+usecase of views : famous and repeatedly queries we want for our business.
 
+===
 
+create view recent_posts as (
+	select * from posts order by created_at desc limit 10
+)
 
+select * from recent_posts 
 
+how change definition of view or delete ???
 
+create or replace  view  recent_posts  as (
+	select * from posts order by created_at desc limit 15
+)
 
+drop view recent_posts;
 
+---------------------------
 
+Materiallized View :
 
+view query that get executed every time 
 
-
-
-
-
-
-
-
-
-
-
-
+but Materiallized query that get execute only at very specific times
+but result get saved and can be refrenced.
 
 
 
