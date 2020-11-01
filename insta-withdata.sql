@@ -150,25 +150,49 @@
 --)
 
 
+--drop view recent_posts;
+
+--create materialized view weekly_likes as (
+--select
+--	date_trunc('week', coalesce(posts.created_at , comments.created_at)) as week,
+--	count(posts.id) as num_posts ,
+--	count (comments.id) as num_comments
+--from
+--	likes
+--left join posts on
+--	posts.id = likes.post_id
+--left join comments on
+--	comments.id = likes.comment_id
+--group by
+--	week
+--order by
+--	week ) with data;
 
 
+--select * from weekly_likes
 
+--delete from posts where created_at < '2010-02-01';
 
+--refresh materialized view weekly_likes;
 
+--create table accounts 
+--(
+--	id serial primary key,
+--	name varchar(20) not null,
+--	balance integer not null
+--)
+--
+--insert into accounts(name,balance)
+--values
+--('gia',100),
+--('alisyon',100)
+--
+--select * from accounts;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+begin;
+select * from accounts;
+commit;
+rollback;
 
 
 

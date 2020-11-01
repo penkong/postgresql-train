@@ -1156,9 +1156,86 @@ view query that get executed every time
 but Materiallized query that get execute only at very specific times
 but result get saved and can be refrenced.
 
+hint : date trunk function allow us to pull out some data from TIMESTAMP
+
+
+create materialized view weekly_likes as (
+select
+	date_trunc('week', coalesce(posts.created_at , comments.created_at)) as week,
+	count(posts.id) as num_posts ,
+	count (comments.id) as num_comments
+from
+	likes
+left join posts on
+	posts.id = likes.post_id
+left join comments on
+	comments.id = likes.comment_id
+group by
+	week
+order by
+	week ) with data;
+
+
+select * from weekly_likes
+
+
+for refresh 
+refresh materialized view weekly_likes;
+
+--------------------------------------
+
+Transactions :
+
+all execute or none execute .
+
+
+openning and closing Transactions :
+
+every query runner or app is connection to pg , unique one .
+
+open :
+begin;
+it open new workspace.
+commit; or rollback;
+
+
+--------------------------------------------
+
+
+Schema Migration :
+
+change data strcuture
 
 
 
+
+to rename column :
+alter table x rename column y to z 
+
+
+schema Migration contains two type of sections 
+up and down 
+
+we apply Migration or revert
+
+
+install node-pg-migrat and pg
+
+
+"scripts": {
+    "migrate": "node-pg-migrate"
+  },
+
+npm run migrate create table comments
+
+write raw sql in migrations
+
+
+to connect to db
+
+postgres://username:password@route
+
+DATABASE_URL=postgres://postgres@localhost:5432/socialnet npm run migrate up
 
 
 
