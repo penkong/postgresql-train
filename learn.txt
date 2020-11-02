@@ -1261,13 +1261,19 @@ allow us to receive form submission from browser
 
 for step 2 there is ways :
 option 1 : determine updates in js
+but node server maybe crahs because files are a lot
 
+option 2 : batching
+is try to load up just a set of all our records at once.
+but maybe in half way fail and our work become edddddd
 
+option 3 : manually connect to db with node.
 
+option 4 : just use sql
+but validation is so harder ;
 
-
-
-
+option 5 : 
+hint : if Transaction is open each row effected will be lock until commit or rollback
 
 
 
