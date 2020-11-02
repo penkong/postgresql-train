@@ -1277,13 +1277,20 @@ hint : if Transaction is open each row effected will be lock until commit or rol
 
 
 
+-------------------------------------
+
+
+access from api :
+
+we rather than use client we use pool , pool(client, client , ...)
+
+when we want do Transaction use client
 
 
 
 
+----------------------------------
 
-
-
-
+security of postgress :
 
 
