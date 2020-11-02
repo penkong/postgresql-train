@@ -1235,18 +1235,32 @@ to connect to db
 
 postgres://username:password@route
 
-DATABASE_URL=postgres://postgres@localhost:5432/socialnet npm run migrate up
+DATABASE_URL=postgres://postgres@localhost:5432/socialnet npm run migrate up/down
+
+
+--------------------------------
+
+Schema Migration and Data Migration :
+consider have millions of data need to change.
+
+better to seprate these 2 steps.
+
+best practice 
+add changes to db with schema migration
+update new version of api to write to both pre and last changes to db. step 2
+copy data with data migration.
+update api to now produce base on last step.
+drop unwanted with schme migration
 
 
 
+hint : app.use(express.urlencoded({ extended: true }));
+allow us to receive form submission from browser
 
 
 
-
-
-
-
-
+for step 2 there is ways :
+option 1 : determine updates in js
 
 
 

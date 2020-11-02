@@ -5,11 +5,13 @@
   "main": "index.js",
   "scripts": {
     "migrate": "node-pg-migrate"
+    
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.17.1",
     "node-pg-migrate": "^5.8.1",
     "pg": "^8.4.2"
   }
