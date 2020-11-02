@@ -2,4 +2,32 @@ http://localhost:3005/users
 
 ###
 
+# http://localhost:3005/users/1;drop table users
+
 http://localhost:3005/users/1
+
+
+###
+
+POST http://localhost:3005/users HTTP/1.1
+content-type: application/json
+
+{
+  "username": "cookie",
+  "bio" : "hello i am cookie"
+}
+
+###
+
+PUT http://localhost:3005/users/7 HTTP/1.1
+content-type: application/json
+
+{
+  "username": "mk",
+  "bio" : "hello i am mk"
+}
+
+###
+
+DELETE http://localhost:3005/users/4 HTTP/1.1
+content-type: application/json

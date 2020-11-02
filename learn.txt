@@ -1293,4 +1293,8 @@ when we want do Transaction use client
 
 security of postgress :
 
+must sanitize request params
 
+or rely on postgres to sanitize. 
+
+user prepare statement pattern we only can use values 
