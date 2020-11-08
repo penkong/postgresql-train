@@ -1298,3 +1298,34 @@ must sanitize request params
 or rely on postgres to sanitize. 
 
 user prepare statement pattern we only can use values 
+
+
+-----------------------------------------
+
+
+TESTING :
+
+jest run test in parallel
+
+there fore need multi connection and can cause problem.
+
+
+
+schema on pg :
+schema are like folders to organize things in a db.
+every db gets a defualt schema called public
+
+each schema can have its own seprate copy of a table.
+
+ex :
+create schema test;
+create table test.users ();
+insert into test.users
+
+search_path inernally controlls which path(schema) going access be default.
+
+
+show search_path  ===> "$user", public
+
+
+
