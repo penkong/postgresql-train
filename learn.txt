@@ -90,13 +90,16 @@ SELECT name ||', ' || country AS conacted FROM cities;
 FILTERING ROWS WITH WHERE :
 
 order of exec.
+
 // third exec it.
 SELECT
   name,
   area
+
 // first exec it
 FROM
   cities
+  
 // second exec it
 WHERE
   area > 4000;
@@ -951,7 +954,7 @@ get index size :
 
 
 
-there is different tpye of index : b tree (top) use 99% of times , 
+there is different type of index : b tree (top) use 99% of times , 
 also : 
 hash speed up simple equality check , 
 gist geometry full text search, 
@@ -995,20 +998,22 @@ first row in each leaf node is pointer to next one .
 Query Tunning :
 
 steps query go through in pg :
-query pipline : 
-evaluate correct query
-parser : build query tree - logical steps for p
 
-rewrite : decompose views into underlying table references 
-          make a little modification to execute better.
+query pipline :  evaluate correct query
 
-planner : look at query tree , find out what info you want fetch
-          and make different plan or strategies to get info (use index)
+parser :         build query tree - logical steps for p
 
-executer : run! 
+rewrite :        decompose views into underlying table references 
+                 make a little modification to execute better.
+
+planner :        look at query tree , find out what info you want fetch
+                 and make different plan or strategies to get info (use index)
+
+executer :       run! 
 
 
 === 
+
 planner stage :
 
 Benchmarking tools not for prod .
@@ -1033,13 +1038,23 @@ let us know how query execute
 let us make understand form normal form
 also use for write recursive form of queries that impossible in normal
 
-select username , tags.created_at 
-from users join (
-	select user_id ,created_at from caption_tags 
+select 
+  username , tags.created_at 
+from 
+  users 
+join (
+	select 
+    user_id ,created_at 
+  from 
+    caption_tags 
 	union all
-	select user_id , created_at  from photo_tags pt 
+	select 
+    user_id , created_at  
+  from 
+    photo_tags pt 
 ) as tags on tags.user_id = users.id
-where tags.created_at < '2010-01-07'
+where 
+  tags.created_at < '2010-01-07'
 
 
 
@@ -1049,9 +1064,15 @@ with tags as (
 	union all
 	select user_id , created_at  from photo_tags pt 
 )
-select username , tags.created_at 
-from users join tags on tags.user_id = users.id
-where tags.created_at < '2010-01-07'
+
+select 
+  username , tags.created_at 
+from 
+  users 
+join 
+  tags on tags.user_id = users.id
+where 
+  tags.created_at < '2010-01-07'
 
 
 ------------------------------------------------
@@ -1062,15 +1083,17 @@ every cte you write has union keyword inside it
 
 
 with recursive countdown(val) as (
-	select 8 as val -- initial , non recursive query
+	select 8 as val                                -- initial , non recursive query
 	union
-	select val -1 from countdown where val > 1 -- recursive query
+	select val -1 from countdown where val > 1     -- recursive query
 )
-select * 
+select 
+  * 
 from 
-countdown;
+  countdown;
 
 behnid scene :
+
 pg make 2 table , result table and working table
 number of columns are countdown(val,col2,col3,...)
 first we run non recursive statement and put in both table.
@@ -1086,19 +1109,30 @@ with recursive suggestions(leader_id, follower_id, depth) as (
 		leader_id ,
 		follower_id ,
 		1 as depth
-	from followers 
-	where follower_id = 1000
+	from 
+    followers 
+	where 
+    follower_id = 1000
 	union 
-	select followers.leader_id , followers.follower_id, depth + 1
-	from followers 
-	join suggestions on suggestions .leader_id = followers.follower_id 
-	where depth < 3
+	select 
+    followers.leader_id , followers.follower_id, depth + 1
+	from 
+    followers 
+	join 
+    suggestions on suggestions .leader_id = followers.follower_id 
+	where 
+    depth < 3
 )
-select distinct users.id , users.username 
-from suggestions 
-join users on users.id = suggestions.leader_id
-where depth  > 1
-limit 30;
+select 
+  distinct users.id , users.username 
+from 
+  suggestions 
+join 
+  users on users.id = suggestions.leader_id
+where 
+  depth  > 1
+limit 
+  30;
 
 
 any heirarchy use recursive cte .
@@ -1107,10 +1141,15 @@ any heirarchy use recursive cte .
 
 
 --------------------------------------
+
 hint : copy all the rows from one table to another
-insert into table1(x,y,z,y)
-select x,y,z,y
-from table2
+
+insert into 
+  table1(x,y,z,y)
+select 
+  x,y,z,y
+from 
+  table2
 
 Simplify queries with views :
 
@@ -1160,20 +1199,21 @@ hint : date trunk function allow us to pull out some data from TIMESTAMP
 
 
 create materialized view weekly_likes as (
-select
-	date_trunc('week', coalesce(posts.created_at , comments.created_at)) as week,
-	count(posts.id) as num_posts ,
-	count (comments.id) as num_comments
-from
-	likes
-left join posts on
-	posts.id = likes.post_id
-left join comments on
-	comments.id = likes.comment_id
-group by
-	week
-order by
-	week ) with data;
+  select
+    date_trunc('week', coalesce(posts.created_at , comments.created_at)) as week,
+    count(posts.id) as num_posts ,
+    count (comments.id) as num_comments
+  from
+    likes
+  left join posts on
+    posts.id = likes.post_id
+  left join comments on
+    comments.id = likes.comment_id
+  group by
+    week
+  order by
+    week 
+) with data;
 
 
 select * from weekly_likes
