@@ -1367,5 +1367,24 @@ search_path inernally controlls which path(schema) going access be default.
 
 show search_path  ===> "$user", public
 
+--------------------------------------------
 
+which psql
+/Applications/Postgres.app/Contents/Versions/13/bin
+createdb -U <username = postgres> <name of your db>
+psql <db> -U <username>
 
+create table test (name )
+
+when want to use file to create strcuture of db :
+psql -U <username> <db name> <(unix) <sth.sql file>
+\d
+\h
+
+docker run -d --name pg -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres
+docker exec -it pg bash
+psql mkz -U postgres ***
+createdb -U postgres testme
+psql testme -U postgres
+
+create user sth with superuser password 'dsfsdfs';
