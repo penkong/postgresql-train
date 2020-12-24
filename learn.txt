@@ -1388,3 +1388,4 @@ createdb -U postgres testme
 psql testme -U postgres
 
 create user sth with superuser password 'dsfsdfs';
+select * from pg_user
