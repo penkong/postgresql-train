@@ -1277,7 +1277,18 @@ postgres://username:password@route
 
 DATABASE_URL=postgres://postgres@localhost:5432/socialnet npm run migrate up/down
 
-
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "root",
+  "password": "secret",
+  // "logging": true,
+  // "synchronize": true,
+  "database": "anycountries",
+  "entities": ["./src/data-layer/models/*.ts"],
+  "migrations": ["./src/data-layer/migrations/*.ts"]
+}
 --------------------------------
 
 Schema Migration and Data Migration :
